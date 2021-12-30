@@ -10,7 +10,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @RestController
 public class citasReactivaResource {
@@ -57,8 +56,9 @@ public class citasReactivaResource {
     }
 
     @GetMapping("/citasReactivas/{date}/{hour}")
-    private Mono<citasDTOReactiva> findByDate(@PathVariable(value = "date") String date, @PathVariable(value = "hour") String hour) {
-        return this.icitasReactivaService.findByDate(LocalDate.parse(date), hour);
+    private Flux<citasDTOReactiva> findByDate(@PathVariable(value = "date") String date, @PathVariable(value = "hour") String hour) {
+        LocalDate fechaParseada = LocalDate.parse(date);
+        return this.icitasReactivaService.findByDate(fechaParseada, hour);
     }
 
     @GetMapping("/citasReactivas/doctorName/{id}")
