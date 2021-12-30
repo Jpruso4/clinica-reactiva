@@ -12,11 +12,17 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+
 @Service
 public class citasReactivaServiceImpl implements IcitasReactivaService {
 
+    private final IcitasReactivaRepository IcitasReactivaRepository;
+
     @Autowired
-    private IcitasReactivaRepository IcitasReactivaRepository;
+    public citasReactivaServiceImpl (IcitasReactivaRepository iCitasReactivaRepository){
+        this.IcitasReactivaRepository = iCitasReactivaRepository;
+    }
 
     @Override
     public Mono<citasDTOReactiva> save(citasDTOReactiva citasDTOReactiva) {
@@ -57,20 +63,18 @@ public class citasReactivaServiceImpl implements IcitasReactivaService {
     }
 
     @Override
-    public Flux<citasDTOReactiva> findByDate(String fechaReservaCita, String horaReservaCita) {
-       return this.IcitasReactivaRepository.findByfechaReservaCita(fechaReservaCita)
-               .filter(p -> p.getHoraReservaCita().equals(horaReservaCita))
-               .switchIfEmpty(Flux.empty());
+    public Mono<ResponseEntity<citasDTOReactiva>> cancelAppointment(String id) {
+        return findById(id).flatMap(citasDTOReactiva -> {
+                    citasDTOReactiva.setEstadoReservaCita("Cancel");
+                    citasDTOReactiva.setEstadoCita(false);
+                    return save(citasDTOReactiva);
+                }).flatMap(citasDTOReactiva -> Mono.just(ResponseEntity.ok(citasDTOReactiva)))
+                .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
     }
 
     @Override
-    public Mono<citasDTOReactiva> getPadecimientos(String id) {
-        Mono<citasDTOReactiva> patientData = findById(id).flatMap(citasDTOReactiva -> {
-            citasDTOReactiva patient = new citasDTOReactiva();
-            patient.setPadecimientos(citasDTOReactiva.getPadecimientos());
-            return Mono.just(patient);
-        });
-        return patientData;
+    public Mono<citasDTOReactiva> findByFechaReservaCitaAndHoraReservaCita(LocalDate fechaReservaCita, String horaReservaCita) {
+        return this.IcitasReactivaRepository.findByFechaReservaCitaAndHoraReservaCita(fechaReservaCita, horaReservaCita);
     }
 
     @Override
@@ -85,12 +89,13 @@ public class citasReactivaServiceImpl implements IcitasReactivaService {
     }
 
     @Override
-    public Mono<ResponseEntity<citasDTOReactiva>> cancelAppointment(String id) {
-        return findById(id).flatMap(citasDTOReactiva -> {
-                    citasDTOReactiva.setEstadoReservaCita("Cancel");
-                    citasDTOReactiva.setEstadoCita(false);
-                    return save(citasDTOReactiva);
-                }).flatMap(citasDTOReactiva -> Mono.just(ResponseEntity.ok(citasDTOReactiva)))
-                .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
+    public Flux<citasDTOReactiva> getPadecimientos(String idPaciente) {
+        Flux<citasDTOReactiva> patientData = findByIdPaciente(idPaciente).flatMap(citasDTOReactiva -> {
+            citasDTOReactiva patient = new citasDTOReactiva();
+            patient.setNombrePaciente(citasDTOReactiva.getNombrePaciente());
+            patient.setPadecimientos(citasDTOReactiva.getPadecimientos());
+            return Mono.just(patient);
+        });
+        return patientData;
     }
 }

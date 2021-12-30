@@ -1,6 +1,7 @@
 package com.springBajo8.springBajo8.web;
 
 import com.springBajo8.springBajo8.domain.citasDTOReactiva;
+import com.springBajo8.springBajo8.repository.IcitasReactivaRepository;
 import com.springBajo8.springBajo8.service.IcitasReactivaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,37 +11,40 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @RestController
 public class citasReactivaResource {
 
+    private final IcitasReactivaService icitasReactivaService;
+
     @Autowired
-    private IcitasReactivaService icitasReactivaService;
+    public citasReactivaResource(IcitasReactivaService icitasReactivaService){
+        this.icitasReactivaService = icitasReactivaService;
+    }
 
     @PostMapping("/citasReactivas")
     @ResponseStatus(HttpStatus.CREATED)
     private Mono<citasDTOReactiva> save(@RequestBody citasDTOReactiva citasDTOReactiva) {
-        return this.icitasReactivaService.save(citasDTOReactiva);
+        return icitasReactivaService.save(citasDTOReactiva);
     }
 
     @DeleteMapping("/citasReactivas/{id}")
     private Mono<ResponseEntity<citasDTOReactiva>> delete(@PathVariable("id") String id) {
-        return this.icitasReactivaService.delete(id)
+        return icitasReactivaService.delete(id)
                 .flatMap(citasDTOReactiva -> Mono.just(ResponseEntity.ok(citasDTOReactiva)))
                 .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
     }
 
     @PutMapping("/citasReactivas/{id}")
     private Mono<ResponseEntity<citasDTOReactiva>> update(@PathVariable("id") String id, @RequestBody citasDTOReactiva citasDTOReactiva) {
-        return this.icitasReactivaService.update(id, citasDTOReactiva)
+        return icitasReactivaService.update(id, citasDTOReactiva)
                 .flatMap(citasDTOReactiva1 -> Mono.just(ResponseEntity.ok(citasDTOReactiva1)))
                 .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
     }
 
     @GetMapping("/citasReactivas/{idPaciente}/byidPaciente")
     private Flux<citasDTOReactiva> findAllByidPaciente(@PathVariable("idPaciente") String idPaciente) {
-        return this.icitasReactivaService.findByIdPaciente(idPaciente);
+        return icitasReactivaService.findByIdPaciente(idPaciente);
     }
 
     @GetMapping(value = "/citasReactivas")
@@ -50,22 +54,22 @@ public class citasReactivaResource {
 
     @PutMapping("/citasReactivas/cancelAppointment/{id}")
     private Mono<ResponseEntity<citasDTOReactiva>> cancelAppointment(@PathVariable("id") String id) {
-        return this.icitasReactivaService.cancelAppointment(id);
+        return icitasReactivaService.cancelAppointment(id);
     }
 
     @GetMapping("/citasReactivas/{fechaReservaCita}/{horaReservaCita}")
-    private Flux<citasDTOReactiva> findByDate(@PathVariable(value = "fechaReservaCita") String fechaReservaCita, @PathVariable(value = "horaReservaCita") String horaReservaCita) {
-        return this.icitasReactivaService.findByDate(fechaReservaCita, horaReservaCita);
+    private Mono<citasDTOReactiva> findByDateAndHour(@PathVariable(value = "fechaReservaCita") String fechaReservaCita, @PathVariable(value = "horaReservaCita") String horaReservaCita) {
+        return icitasReactivaService.findByFechaReservaCitaAndHoraReservaCita(LocalDate.parse(fechaReservaCita), horaReservaCita);
     }
 
     @GetMapping("/citasReactivas/doctorName/{id}")
     private Mono<citasDTOReactiva> getDoctorName(@PathVariable("id") String id) {
-        return this.icitasReactivaService.getDoctorName(id);
+        return icitasReactivaService.getDoctorName(id);
     }
 
-    @GetMapping("/citasReactivas/nombreMedico/{id}")
-    private Mono<citasDTOReactiva> getPadecimientos(@PathVariable("id") String id){
-        return this.icitasReactivaService.getPadecimientos(id);
+    @GetMapping("/citasReactivas/padecimientos/{id}")
+    private Flux<citasDTOReactiva> getPadecimientos(@PathVariable("id") String idPaciente){
+        return icitasReactivaService.getPadecimientos(idPaciente);
     }
 
 }
