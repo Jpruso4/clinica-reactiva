@@ -21,8 +21,9 @@ public interface IcitasReactivaService {
 
     Mono<citasDTOReactiva> findById(String id);
 
-    Flux<citasDTOReactiva> findByDate(LocalDate fecha, String hour);
+    Mono<citasDTOReactiva> findByDate(LocalDate fecha, String hour);
 
+    //Observas si este seria mas un Flux debido a que serian todos los padecimientos del paciente
     Mono<citasDTOReactiva> getPadecimientos(String id);
 
     Mono<citasDTOReactiva> getDoctorName(String id);

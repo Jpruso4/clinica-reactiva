@@ -56,11 +56,10 @@ public class citasReactivaResource {
 
     }
 
-    //@GetMapping("/citasReactivas/{date}/{hour}")
-   // private Flux<citasDTOReactiva> findByDate(@PathVariable(value = "date") String date, @PathVariable(value = "hour") String hour) {
-        //return this.icitasReactivaService.findByDate(LocalDate.parse(date), hour);
-      //  return null;
-    //}
+    @GetMapping("/citasReactivas/{date}/{hour}")
+    private Mono<citasDTOReactiva> findByDate(@PathVariable(value = "date") String date, @PathVariable(value = "hour") String hour) {
+        return this.icitasReactivaService.findByDate(LocalDate.parse(date), hour);
+    }
 
     @GetMapping("/citasReactivas/doctorName/{id}")
     private Mono<citasDTOReactiva> getDoctorName(@PathVariable("id") String id) {

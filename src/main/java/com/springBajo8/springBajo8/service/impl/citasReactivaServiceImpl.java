@@ -59,8 +59,8 @@ public class citasReactivaServiceImpl implements IcitasReactivaService {
     }
 
     @Override
-    public Flux<citasDTOReactiva> findByDate(LocalDate fecha, String hour) {
-       return this.IcitasReactivaRepository.findByDate(fecha, hour);
+    public Mono<citasDTOReactiva> findByDate(LocalDate fecha, String hour) {
+       return this.IcitasReactivaRepository.findByfechaReservaCita(fecha, hour);
     }
 
     @Override
