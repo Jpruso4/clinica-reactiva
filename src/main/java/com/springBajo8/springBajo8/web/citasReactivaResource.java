@@ -1,6 +1,5 @@
 package com.springBajo8.springBajo8.web;
 
-
 import com.springBajo8.springBajo8.domain.citasDTOReactiva;
 import com.springBajo8.springBajo8.service.IcitasReactivaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @RestController
 public class citasReactivaResource {
@@ -46,6 +48,29 @@ public class citasReactivaResource {
     @GetMapping(value = "/citasReactivas")
     private Flux<citasDTOReactiva> findAll() {
         return this.icitasReactivaService.findAll();
+    }
+
+    @PutMapping("/citasReactivas/cancelAppointment/{id}")
+    private Mono<ResponseEntity<citasDTOReactiva>> cancelAppointment(@PathVariable("id") String id) {
+        return this.icitasReactivaService.cancelAppointment(id);
+
+    }
+
+    //@GetMapping("/citasReactivas/{date}/{hour}")
+   // private Flux<citasDTOReactiva> findByDate(@PathVariable(value = "date") String date, @PathVariable(value = "hour") String hour) {
+        //return this.icitasReactivaService.findByDate(LocalDate.parse(date), hour);
+      //  return null;
+    //}
+
+    @GetMapping("/citasReactivas/doctorName/{id}")
+    private Mono<citasDTOReactiva> getDoctorName(@PathVariable("id") String id) {
+        return this.icitasReactivaService.getDoctorName(id);
+
+    }
+
+    @GetMapping("/citasReactivas/nombreMedico/{id}")
+    private Mono<citasDTOReactiva> getPadecimientos(@PathVariable("id") String id){
+        return this.icitasReactivaService.getPadecimientos(id);
     }
 
 }
