@@ -1,17 +1,13 @@
 package com.springBajo8.springBajo8.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
 @Document(collection = "citas")
-@Getter
-@Setter
+@Data
 public class citasDTOReactiva {
 
     @Id
@@ -21,7 +17,7 @@ public class citasDTOReactiva {
     private String apellidosPaciente;
     private String nombreMedico;
     private String apellidosMedico;
-    private LocalDate fechaReservaCita;
+    private String fechaReservaCita;
     private String horaReservaCita;
     private String estadoReservaCita;
     private Boolean estadoCita;

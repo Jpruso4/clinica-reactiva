@@ -6,8 +6,6 @@ import org.springframework.http.ResponseEntity;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDate;
-
 public interface IcitasReactivaService {
     Mono<citasDTOReactiva> save(citasDTOReactiva citasDTOReactiva);
 
@@ -21,7 +19,7 @@ public interface IcitasReactivaService {
 
     Mono<citasDTOReactiva> findById(String id);
 
-    Flux<citasDTOReactiva> findByDate(LocalDate fecha, String hour);
+    Flux<citasDTOReactiva> findByDate(String  fechaReservaCita, String horaReservaCita);
 
     //Observas si este seria mas un Flux debido a que serian todos los padecimientos del paciente
     Mono<citasDTOReactiva> getPadecimientos(String id);

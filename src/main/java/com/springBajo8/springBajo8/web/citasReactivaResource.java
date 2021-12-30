@@ -10,6 +10,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @RestController
 public class citasReactivaResource {
@@ -28,7 +29,6 @@ public class citasReactivaResource {
         return this.icitasReactivaService.delete(id)
                 .flatMap(citasDTOReactiva -> Mono.just(ResponseEntity.ok(citasDTOReactiva)))
                 .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
-
     }
 
     @PutMapping("/citasReactivas/{id}")
@@ -36,7 +36,6 @@ public class citasReactivaResource {
         return this.icitasReactivaService.update(id, citasDTOReactiva)
                 .flatMap(citasDTOReactiva1 -> Mono.just(ResponseEntity.ok(citasDTOReactiva1)))
                 .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
-
     }
 
     @GetMapping("/citasReactivas/{idPaciente}/byidPaciente")
@@ -52,19 +51,16 @@ public class citasReactivaResource {
     @PutMapping("/citasReactivas/cancelAppointment/{id}")
     private Mono<ResponseEntity<citasDTOReactiva>> cancelAppointment(@PathVariable("id") String id) {
         return this.icitasReactivaService.cancelAppointment(id);
-
     }
 
-    @GetMapping("/citasReactivas/{date}/{hour}")
-    private Flux<citasDTOReactiva> findByDate(@PathVariable(value = "date") String date, @PathVariable(value = "hour") String hour) {
-        LocalDate fechaParseada = LocalDate.parse(date);
-        return this.icitasReactivaService.findByDate(fechaParseada, hour);
+    @GetMapping("/citasReactivas/{fechaReservaCita}/{horaReservaCita}")
+    private Flux<citasDTOReactiva> findByDate(@PathVariable(value = "fechaReservaCita") String fechaReservaCita, @PathVariable(value = "horaReservaCita") String horaReservaCita) {
+        return this.icitasReactivaService.findByDate(fechaReservaCita, horaReservaCita);
     }
 
     @GetMapping("/citasReactivas/doctorName/{id}")
     private Mono<citasDTOReactiva> getDoctorName(@PathVariable("id") String id) {
         return this.icitasReactivaService.getDoctorName(id);
-
     }
 
     @GetMapping("/citasReactivas/nombreMedico/{id}")
